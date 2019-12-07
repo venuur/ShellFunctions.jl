@@ -97,9 +97,15 @@ function _head(options, args)
     end
 
     lines = []
+    if length(args) == 0
+        args = ["-"]
+    end
     for fn in args
         file_lines = String[]
         n_lines = 0
+        if fn =="-"
+            fn = stdin
+        end
         for fline = eachline(fn)
             push!(file_lines, fline)
             n_lines += 1
