@@ -20,6 +20,16 @@ anyoptionequal(option, names...) = any(optionequal(option, n) for n in names)
 
 function get_option(options, names...; default = nothing)
     i = findnext(o -> anyoptionequal(o, names...), options, 1)
-    i === nothing && return default
-    options[i]
+    if i === nothing
+        if !(default isa Pair)
+            default = names[1] => default
+        end
+        return default
+    end
+    found = options[i]
+    if !(found isa Pair)
+        return found => true
+    else
+        return found
+    end
 end

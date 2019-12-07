@@ -40,7 +40,7 @@ function head(args...)
 end
 
 function _head(options, args)
-    if get_option(options, :h, :help; default = nothing) !== nothing
+    if get_option(options, :h, :help, default = false).second
         println(@doc head)
         return
     end
@@ -49,11 +49,11 @@ function _head(options, args)
 
     # TODO: Allow negative number of lines to read until n from the end.
     max_lines = get_option(
-        options, :n, :lines; default = :lines => 10).second
+        options, :n, :lines; default = 10).second
     quiet = get_option(
-        options, :q, :quiet, :silent; default = nothing) !== nothing
+        options, :q, :quiet, :silent, default = false).second
     verbose = get_option(
-        options, :v, :verbose; default = nothing) !== nothing
+        options, :v, :verbose, default = false).second
     if verbose && quiet
         error(":verbose and :quiet both supplied. At most one can be.")
     end
@@ -65,13 +65,11 @@ function _head(options, args)
     for fn in args
         file_lines = String[]
         n_lines = 0
-        if fn =="-"
-            fn = stdin
-        end
+        fn == "-" && fn == stdin
         for fline = eachline(fn)
             push!(file_lines, fline)
             n_lines += 1
-            n_lines == max_lines && break
+            n_lines ≥ max_lines && break
         end
         if multiple_files
             if quiet
