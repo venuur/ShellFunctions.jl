@@ -1,3 +1,5 @@
+export echo, echo!
+
 function echo(args...)
     options, pos_args = parse_args(args)
     _echo(options, pos_args)
