@@ -1,3 +1,7 @@
+module Options
+
+export parse_args, get_option, do_print_usage
+
 using Glob: glob
 
 function parse_args(args)
@@ -41,3 +45,5 @@ function do_print_usage(options, docs)
     end
     false
 end
+
+end # module
