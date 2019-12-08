@@ -3,12 +3,19 @@ export shcat, shcat!
 @with_kw struct ShcatOptions
     show_ends = false
     number = false
+    number_nonblank = false
 end
 
 function parse_options(::Type{ShcatOptions}, options)
     ShcatOptions(
         show_ends = get_option(options, :E, :show_ends, default = false).second,
         number = get_option(options, :n, :number, default = false).second,
+        number_nonblank = get_option(
+            options,
+            :b,
+            :number_nonblank,
+            default = false,
+        ).second,
     )
 end
 
@@ -40,7 +47,7 @@ Examples:
 function shcat(args...)
     options_seq, pos_args = parse_args(args)
     do_print_usage(options_seq, @doc shcat) && return
-    options = parse_options(ShcatOptions, options)
+    options = parse_options(ShcatOptions, options_seq)
     _shcat(options, pos_args)
 end
 
@@ -55,7 +62,19 @@ function _shcat(options, args)
         fn == "-" && (fn = stdin)
 
         file_lines = readlines(fn)
-        if number_all
+        if options.number_nonblank
+            n = 1
+            numbered_lines = Array{Any}(undef, length(file_lines))
+            for i in eachindex(file_lines)
+                if length(file_lines[i]) > 0
+                    numbered_lines[i] = n => file_lines[i]
+                    n += 1
+                else
+                    numbered_lines[i] = ""
+                end
+            end
+            file_lines = numbered_lines
+        elseif number_all
             file_lines = [i => line for (i, line) in enumerate(file_lines)]
         end
         append!(lines, file_lines)
@@ -76,7 +95,7 @@ function shcat!(args...)
     for line in lines
         if line isa Pair
             n += 1
-            if n % 10 ^ ndigits == 0
+            if n % 10^ndigits == 0
                 nspaces -= 1
                 ndigits += 1
             end
