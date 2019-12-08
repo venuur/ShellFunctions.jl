@@ -20,28 +20,33 @@ function parse_options(::Type{ShcatOptions}, options)
 end
 
 """
-    cat(options..., args...)
+    shcat(options..., files...)
 
-Concatenate FILE(s) to standard output.
+Return lines of files concatenated into a single array.
 
-With no FILE, or when FILE is -, read standard input.
+With no files, or when file is "-", read standard input.
 
-    :A, :show_all           equivalent to :v, :E, :T
-    :b, :number_nonblank    number nonempty output lines, overrides :n
-    :e                      equivalent to :v, :E
+    :b, :number_nonblank    number nonempty output lines as `n => line`,
+                            overrides :n
     :E, :show_ends          display \$ at end of each line
-    :n, :number             number all output lines
+    :n, :number             number all output lines as `n => line`
+      :help     display this help and exit
+
+    FOLLOWING NOT IMPLEMENTED
+    :A, :show_all           equivalent to :v, :E, :T
+    :e                      equivalent to :v, :E
     :s, :squeeze_blank      suppress repeated empty output lines
     :t                      equivalent to :v, :T
     :T, :show_tabs          display TAB characters as ^I
     :u                      (ignored)
     :v, :show_nonprinting   use ^ and M- notation, except for LFD and TAB
-      :help     display this help and exit
       :version  output version information and exit
 
-Examples:
-  cat f - g  Output f's contents, then standard input, then g's contents.
-  cat        Copy standard input to standard output.
+# Examples
+
+    shcat("f", "-", "g") # Output f's contents, then standard input, then g's
+                         # contents.
+    shcat!()        # Copy standard input to standard output.
 
 """
 function shcat(args...)

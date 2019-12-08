@@ -30,27 +30,26 @@ end
 """
     head(options..., files...)
 
-Print the first 10 lines of each FILE to standard output.
+Return array of first 10 lines of each file.
 
-With more than one FILE, precede each with a header giving the file name.
-With no FILE, or when FILE is -, read standard input.
+With more than one file, return each as pair `file => lines` or print each
+with a header giving the file name.
+With no file, or when file is "-", read standard input.
 
 Mandatory arguments to long options are mandatory for short options too.
 
-    :c and :bytes NOT implemented
-    :c, :bytes => [-]NUM     print the first NUM bytes of each file;
-                             with the leading '-', print all but the last
-                             NUM bytes of each file
-    :n, :lines=[-]NUM        print the first NUM lines instead of the first 10;
-                             with the leading '-', print all but the last
-                             NUM lines of each file
-    :q, :quiet, :silent      never print headers giving file names
-    :v, :verbose             always print headers giving file names
-
-    :z and :zero_terminated NOT implemented
-    :z, :zero-terminated    line delimiter is NUL, not newline
+    :n, :lines => [-]NUM    print the first NUM lines instead of the first 10;
+                            with the leading '-', print all but the last
+                            NUM lines of each file
+    :q, :quiet, :silent     never print headers giving file names
+    :v, :verbose            always print headers giving file names
       :help     display this help and exit
-      :version NOT implemented
+
+    FOLLOWING NOT IMPLEMENTED
+    :c, :bytes => [-]NUM    print the first NUM bytes of each file;
+                            with the leading '-', print all but the last
+                            NUM bytes of each file
+    :z, :zero-terminated    line delimiter is NUL, not newline
       :version  output version information and exit
 
 NUM may have a multiplier suffix:
