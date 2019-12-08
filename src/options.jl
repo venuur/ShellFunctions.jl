@@ -33,3 +33,11 @@ function get_option(options, names...; default = nothing)
         return found
     end
 end
+
+function do_print_usage(options, docs)
+    if get_option(options, :h, :help, default = false).second
+        println(docs)
+        return true
+    end
+    false
+end

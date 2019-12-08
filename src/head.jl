@@ -3,6 +3,30 @@
 
 export head, head!
 
+@with_kw struct HeadOptions
+    lines = 10
+    quiet = false
+    verbose = false
+end
+
+function parse_options(::Type{HeadOptions}, options)
+    # TODO: Allow negative number of lines to read until n from the end.
+    max_lines = get_option(
+        options, :n, :lines; default = 10).second
+    quiet = get_option(
+        options, :q, :quiet, :silent, default = false).second
+    verbose = get_option(
+        options, :v, :verbose, default = false).second
+    if verbose && quiet
+        error(":verbose and :quiet both supplied. At most one can be.")
+    end
+    HeadOptions(
+        lines = max_lines,
+        quiet = quiet,
+        verbose = verbose,
+    )
+end
+
 """
     head(options..., files...)
 
@@ -35,28 +59,17 @@ GB 1000\\*1000\\*1000, G 1024\\*1024\\*1024, and so on for T, P, E, Z, Y.
 
 """
 function head(args...)
-    options, pos_args = parse_args(args)
+    options_seq, pos_args = parse_args(args)
+    do_print_usage(options_seq, @doc head) && return
+    options = parse_options(HeadOptions, options_seq)
     _head(options, pos_args)
 end
 
 function _head(options, args)
-    if get_option(options, :h, :help, default = false).second
-        println(@doc head)
-        return
-    end
-
     multiple_files = length(args) > 1
-
-    # TODO: Allow negative number of lines to read until n from the end.
-    max_lines = get_option(
-        options, :n, :lines; default = 10).second
-    quiet = get_option(
-        options, :q, :quiet, :silent, default = false).second
-    verbose = get_option(
-        options, :v, :verbose, default = false).second
-    if verbose && quiet
-        error(":verbose and :quiet both supplied. At most one can be.")
-    end
+    max_lines = options.lines
+    quiet = options.quiet
+    verbose = options.verbose
 
     lines = []
     if length(args) == 0
@@ -90,6 +103,8 @@ end
 
 function head!(args...)
     options, pos_args = parse_args(args)
+    do_print_usage(options_seq, @doc head) && return
+    options = parse_options(HeadOptions, options_seq)
     lines = _head(options, pos_args)
     lines === nothing && return
 
