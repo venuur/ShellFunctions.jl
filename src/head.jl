@@ -102,8 +102,8 @@ end
 
 function head!(args...)
     options, pos_args = parse_args(args)
-    do_print_usage(options_seq, @doc head) && return
-    options = parse_options(HeadOptions, options_seq)
+    do_print_usage(options, @doc head) && return
+    options = parse_options(HeadOptions, options)
     lines = _head(options, pos_args)
     lines === nothing && return
 
