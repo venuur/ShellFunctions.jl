@@ -4,8 +4,9 @@ export parse_args, get_option, do_print_usage
 
 using Glob: glob
 
+isoption(a) = a isa Symbol || a isa Pair
+
 function parse_args(args)
-    isoption(a) = a isa Symbol || a isa Pair
     options = [a for a in args if isoption(a)]
     pos_args = String[]
     for (a, g) in ((a, glob(string(a))) for a in args if !isoption(a))
@@ -43,7 +44,7 @@ function do_print_usage(options, docs)
         println(docs)
         return true
     end
-    false
+    return false
 end
 
 end # module
