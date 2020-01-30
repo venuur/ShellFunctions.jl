@@ -69,7 +69,7 @@ function _awk(options, args)
     #       positional argument.
     program = options.source
     program === nothing && return
-    # Each element of program is eith a function or a pair.
+    # Each element of program is either a function or a pair.
     # Functions are run every time on each line.
     # Pairs are a predicate plus action. The first term is a predicate, so that
     # the action only runs if the predicate returns true. The action is the same
